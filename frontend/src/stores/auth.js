@@ -16,7 +16,7 @@ export const useAuthStore = defineStore("auth", {
       form.append("username", email);
       form.append("password", password);
 
-      const res = await axios.post("http://127.0.0.1:8000/login", form);
+      const res = await axios.post("http://192.168.8.105:8000/login", form);
       this.token = res.data.access_token;
       localStorage.setItem("token", this.token);
 
@@ -29,7 +29,7 @@ export const useAuthStore = defineStore("auth", {
 
     async fetchUser() {
       try {
-        const res = await axios.get("http://127.0.0.1:8000/users/me");
+        const res = await axios.get("http://192.168.8.105:8000/users/me");
         this.user = res.data;
       } catch (error) {
         console.error("Failed to fetch user", error);
@@ -38,7 +38,7 @@ export const useAuthStore = defineStore("auth", {
     },
 
     async register(email, password) {
-      await axios.post("http://127.0.0.1:8000/register", {
+      await axios.post("http://192.168.8.105:8000/register", {
         email,
         password,
       });

@@ -64,10 +64,11 @@ const auth = useAuthStore();
         </RouterLink>
 
         <RouterLink
+          v-if="auth.user?.role === 'admin'"
           to="/admin/users"
           class="hover:bg-gray-700 px-3 py-2 rounded"
         >
-          <span v-if="!layout.isSidebarCollapsed">👤 Users Amin</span>
+          <span v-if="!layout.isSidebarCollapsed">👤 Users Admin</span>
           <span v-else>👤</span>
         </RouterLink>
       </template>

@@ -43,12 +43,16 @@
       <h1 class="text-lg font-bold hidden md:block">Inventory Manager</h1>
     </div>
 
-    <!-- User Info and Conditional Logout -->
+    <!-- User Info and Logout -->
     <div class="flex items-center space-x-4" v-if="auth.user">
-      <span class="text-sm text-gray-300 hidden sm:block">
+      <span
+        data-testid="user-email"
+        class="text-sm text-gray-300 hidden sm:block"
+      >
         {{ auth.user.email }}
       </span>
       <button
+        data-testid="logout-btn"
         @click="logout"
         class="bg-red-600 hover:bg-red-500 px-3 py-1 text-sm rounded"
       >
