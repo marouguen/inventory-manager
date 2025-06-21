@@ -23,7 +23,7 @@ RUN rm -rf /usr/share/nginx/html/*
 COPY --from=build /app/dist /usr/share/nginx/html
 
 # Copy custom nginx config for SPA fallback
-COPY nginx/default.conf /etc/nginx/conf.d/nginx.conf
+COPY nginx/nginx.conf /etc/nginx/conf.d/nginx.conf
 
 EXPOSE 80
 
