@@ -14,10 +14,10 @@ services:
       - backend
 
   backend:
-    image: ghcr.io/marouguen/inventory-manager/inventory-backend:latest
+    image: ghcr.io/marouguen/inventory-backend:latest
     environment:
       DATABASE_URL: postgres://inventory_user:inventory_pass@db:5432/inventory_db
-      SECRET_KEY: "your_production_secret"
+      SECRET_KEY: your_production_secret
     depends_on:
       - db
     deploy:
@@ -29,7 +29,7 @@ services:
       - proxy
 
   frontend:
-    image: ghcr.io/marouguen/inventory-manager/inventory-frontend:latest
+    image: ghcr.io/marouguen/inventory-frontend:latest
     deploy:
       replicas: 1
       restart_policy:
