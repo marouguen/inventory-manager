@@ -1,18 +1,17 @@
-// src/api/index.js
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://192.168.8.105:8000", // ⬅️ change to your FastAPI backend URL
-  withCredentials: false, // Set to true if you're using cookies for auth
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:8000",
+  withCredentials: false,
 });
 
-// Optional: Add auth token automatically if using JWT
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token"); // assumes token is stored in localStorage
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
+export function setupInterceptors(token) {
+  api.interceptors.request.use((config) => {
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  });
+}
 
 export default api;

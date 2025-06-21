@@ -34,7 +34,7 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import axios from "axios";
+import api from "@/api";
 import { useMovementStore } from "@/stores/movement";
 
 const form = ref({
@@ -54,7 +54,7 @@ const submit = async () => {
 };
 
 onMounted(async () => {
-  const res = await axios.get("http://127.0.0.1:8000/products");
+  const res = await api.get("/products");
   products.value = res.data;
 });
 </script>

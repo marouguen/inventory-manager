@@ -1,11 +1,20 @@
+// tests/components/MovementForm.test.js
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { mount, flushPromises } from "@vue/test-utils";
 import { createTestingPinia } from "@pinia/testing";
 import MovementForm from "@/components/MovementForm.vue";
-import axios from "axios";
-import { useMovementStore } from "@/stores/movement"; // ✅ FIXED: missing import
+import { useMovementStore } from "@/stores/movement";
 
-vi.mock("axios");
+// ✅ Mock @/api instead of axios
+vi.mock("@/api", () => ({
+  default: {
+    get: vi.fn(),
+    post: vi.fn(),
+    interceptors: { request: { use: vi.fn() } },
+  },
+}));
+
+import api from "@/api"; // ⬅️ required to use the mock
 
 const mockProducts = [
   { id: 1, name: "Product A" },
@@ -13,7 +22,7 @@ const mockProducts = [
 ];
 
 beforeEach(() => {
-  axios.get.mockResolvedValue({ data: mockProducts });
+  api.get.mockResolvedValue({ data: mockProducts });
 });
 
 describe("MovementForm.vue", () => {
@@ -53,7 +62,7 @@ describe("MovementForm.vue", () => {
 
     await wrapper.find("form").trigger("submit.prevent");
 
-    const movementStore = useMovementStore(); // ✅ FIXED: now works
+    const movementStore = useMovementStore();
     expect(movementStore.submitMovement).toHaveBeenCalledOnce();
     expect(movementStore.submitMovement).toHaveBeenCalledWith({
       product_id: 1,

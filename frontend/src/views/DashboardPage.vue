@@ -39,9 +39,9 @@
 </template>
 
 <script setup>
-import axios from "axios";
 import { ref, watch } from "vue";
 import { useAuthStore } from "@/stores/auth";
+import api from "@/api"; // ✅ centralized axios
 import BarChart from "@/components/charts/BarChart.vue";
 import DoughnutChart from "@/components/charts/DoughnutChart.vue";
 
@@ -59,9 +59,7 @@ const chartOptions = {
   maintainAspectRatio: false,
   plugins: {
     legend: {
-      labels: {
-        color: "#374151",
-      },
+      labels: { color: "#374151" },
     },
   },
   scales: {
@@ -77,23 +75,13 @@ const chartOptions = {
 };
 
 const fetchDashboard = async () => {
-  const headers = {
-    Authorization: `Bearer ${auth.token}`,
-  };
-
   const params = {};
   if (startDate.value) params.start_date = startDate.value;
   if (endDate.value) params.end_date = endDate.value;
 
   const [res1, res2] = await Promise.all([
-    axios.get("http://127.0.0.1:8000/dashboard/by-category", {
-      headers,
-      params,
-    }),
-    axios.get("http://127.0.0.1:8000/dashboard/top-products", {
-      headers,
-      params,
-    }),
+    api.get("/dashboard/by-category", { params }),
+    api.get("/dashboard/top-products", { params }),
   ]);
 
   stockByCategory.value = res1.data;

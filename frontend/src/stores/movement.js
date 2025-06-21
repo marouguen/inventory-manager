@@ -1,6 +1,5 @@
-// src/stores/movement.js
 import { defineStore } from "pinia";
-import axios from "axios";
+import api from "@/api"; // ✅ use centralized axios instance
 
 export const useMovementStore = defineStore("movement", {
   state: () => ({
@@ -11,9 +10,7 @@ export const useMovementStore = defineStore("movement", {
     async fetchLogs() {
       this.loading = true;
       try {
-        const res = await axios.get(
-          "http://127.0.0.1:8000/stock/logs?limit=10"
-        );
+        const res = await api.get("/stock/logs?limit=10");
         this.logs = res.data;
       } catch (e) {
         console.error("Failed to fetch logs", e);
@@ -22,8 +19,8 @@ export const useMovementStore = defineStore("movement", {
       }
     },
     async submitMovement({ product_id, quantity, type }) {
-      const url = `http://127.0.0.1:8000/stock/${type}`;
-      await axios.post(url, { product_id, quantity, type });
+      const url = `/stock/${type}`;
+      await api.post(url, { product_id, quantity, type });
       await this.fetchLogs();
     },
   },

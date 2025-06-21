@@ -1,6 +1,5 @@
-// src/stores/auth.js
 import { defineStore } from "pinia";
-import axios from "axios";
+import api, { setupInterceptors } from "@/api";
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
@@ -16,29 +15,26 @@ export const useAuthStore = defineStore("auth", {
       form.append("username", email);
       form.append("password", password);
 
-      const res = await axios.post("http://192.168.8.105:8000/login", form);
+      const res = await api.post("/login", form);
       this.token = res.data.access_token;
       localStorage.setItem("token", this.token);
 
-      // Set default auth header
-      axios.defaults.headers.common.Authorization = `Bearer ${this.token}`;
-
-      // Fetch user info immediately after login
+      setupInterceptors(this.token); // ✅ Apply after login
       await this.fetchUser();
     },
 
     async fetchUser() {
       try {
-        const res = await axios.get("http://192.168.8.105:8000/users/me");
+        const res = await api.get("/users/me");
         this.user = res.data;
       } catch (error) {
         console.error("Failed to fetch user", error);
-        this.logout(); // Optional: force logout on failure
+        this.logout();
       }
     },
 
     async register(email, password) {
-      await axios.post("http://192.168.8.105:8000/register", {
+      await api.post("/register", {
         email,
         password,
       });
@@ -48,7 +44,6 @@ export const useAuthStore = defineStore("auth", {
       this.token = null;
       this.user = null;
       localStorage.removeItem("token");
-      delete axios.defaults.headers.common.Authorization;
     },
   },
 });

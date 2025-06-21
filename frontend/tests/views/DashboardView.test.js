@@ -1,11 +1,19 @@
 import { mount, flushPromises } from "@vue/test-utils";
 import DashboardPage from "@/views/DashboardPage.vue";
 import { vi } from "vitest";
-import axios from "axios";
 import { createTestingPinia } from "@pinia/testing";
+import api from "@/api";
 
-// Mock axios
-vi.mock("axios");
+// Mock the centralized Axios instance
+vi.mock("@/api", () => ({
+  default: {
+    get: vi.fn(),
+  },
+}));
+
+vi.mock("vue-chartjs", async () => {
+  return await import("../__mocks__/vue-chartjs.js");
+});
 
 describe("DashboardPage.vue", () => {
   const mockCategoryData = [
@@ -19,9 +27,12 @@ describe("DashboardPage.vue", () => {
   ];
 
   beforeEach(() => {
-    axios.get
-      .mockResolvedValueOnce({ data: mockCategoryData }) // first API
-      .mockResolvedValueOnce({ data: mockTopProducts }); // second API
+    api.get.mockClear();
+
+    // Match both endpoints, regardless of query params
+    api.get
+      .mockImplementationOnce(() => Promise.resolve({ data: mockCategoryData }))
+      .mockImplementationOnce(() => Promise.resolve({ data: mockTopProducts }));
   });
 
   it("fetches data and renders charts", async () => {
@@ -40,20 +51,18 @@ describe("DashboardPage.vue", () => {
 
     await flushPromises();
 
-    // Check chart components exist
-    expect(wrapper.findComponent({ name: "DoughnutChart" }).exists()).toBe(
-      true
-    );
-    expect(wrapper.findComponent({ name: "BarChart" }).exists()).toBe(true);
-
-    // Check chart data props
     const doughnutChart = wrapper.findComponent({ name: "DoughnutChart" });
+    const barChart = wrapper.findComponent({ name: "BarChart" });
+
+    // ✅ Ensure charts are rendered
+    expect(doughnutChart.exists()).toBe(true);
+    expect(barChart.exists()).toBe(true);
+
+    // ✅ Validate chart props
     expect(doughnutChart.props("chartData").labels).toEqual([
       "Electronics",
       "Office Supplies",
     ]);
-
-    const barChart = wrapper.findComponent({ name: "BarChart" });
     expect(barChart.props("chartData").labels).toEqual(["Mouse", "Keyboard"]);
   });
 });
