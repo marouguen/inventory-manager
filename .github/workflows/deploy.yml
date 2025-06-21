@@ -52,7 +52,7 @@ jobs:
 
       - name: Prepare SSH key
         run: |
-          echo "${SSH_KEY}" | base64 --decode > private_key
+          echo "${SSH_KEY}" > private_key
           chmod 600 private_key
 
       - name: Deploy to EC2
