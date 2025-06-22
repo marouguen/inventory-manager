@@ -12,6 +12,8 @@ services:
 
   backend:
     build: ./backend
+    ports:
+      - "8000:8000"
     environment:
       DATABASE_URL: postgresql://postgres:admin@db:5432/inventory_db
       SECRET_KEY: "b55c8d5e72b267f259ae5a557cc35b74"
