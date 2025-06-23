@@ -1,45 +1,3 @@
-# services:
-#   db:
-#     image: postgres:15
-#     environment:
-#       POSTGRES_DB: inventory_db
-#       POSTGRES_USER: postgres
-#       POSTGRES_PASSWORD: admin
-#     volumes:
-#       - db_data:/var/lib/postgresql/data
-#     networks:
-#       - backend
-
-#   backend:
-#     build: ./backend
-#     ports:
-#       - "8000:8000"
-#     environment:
-#       DATABASE_URL: postgresql://postgres:admin@db:5432/inventory_db
-#       SECRET_KEY: "b55c8d5e72b267f259ae5a557cc35b74"
-#     depends_on:
-#       - db
-#     networks:
-#       - backend
-#       - proxy
-
-#   frontend:
-#     build: ./frontend
-#     ports:
-#       - "80:80"
-#     depends_on:
-#       - backend
-#     networks:
-#       - proxy
-
-# volumes:
-#   db_data:
-
-# networks:
-#   backend:
-#   proxy:
-
-# Test in localhost
 services:
   db:
     image: postgres:15
@@ -68,20 +26,6 @@ services:
       - ./backend/.env
     command: bash /start.sh
 
-    #   frontend:
-    #     build:
-    #       context: ./frontend
-    #     container_name: inventory-frontend
-    #     volumes:
-    #       - ./frontend:/app
-    #       - /app/node_modules
-    #     ports:
-    #       - "5173:5173"
-    #     working_dir: /app
-    #     command: sh -c "cp .env.development .env && npm install && npm run dev"
-
-    # volumes:
-    #   pgdata:
   frontend:
     build:
       context: ./frontend
@@ -90,3 +34,6 @@ services:
       - "4173:4173"
     depends_on:
       - backend
+
+volumes:
+  pgdata:
