@@ -82,11 +82,11 @@ services:
 
     # volumes:
     #   pgdata:
-    frontend:
-      build:
-        context: ./frontend
-      container_name: inventory-frontend
-      ports:
-        - "4173:4173"
-      depends_on:
-        - backend
+  frontend:
+    build:
+      context: ./frontend
+    container_name: inventory-frontend
+    ports:
+      - "4173:4173"
+    depends_on:
+      - backend
