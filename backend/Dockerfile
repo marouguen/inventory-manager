@@ -11,6 +11,7 @@ RUN chmod +x /start.sh
 
 # ✅ Then copy the rest of the app
 COPY . .
+RUN apt-get update && apt-get install -y postgresql-client
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
