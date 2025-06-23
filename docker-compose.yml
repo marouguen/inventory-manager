@@ -18,14 +18,14 @@ services:
     container_name: inventory-backend
     volumes:
       - ./backend:/app
-      - ./start.sh:/start.sh # ✅ Mount start.sh separately
+      - start.sh:/start.sh # ✅ Mount start.sh separately
     ports:
       - "8000:8000"
     depends_on:
       - db
     env_file:
       - ./backend/.env
-    command: bash /start.sh
+    # command: bash /start.sh
 
   frontend:
     build:
