@@ -5,16 +5,15 @@ RUN apt-get update && apt-get install -y gcc libpq-dev && apt-get clean
 
 WORKDIR /app
 
-# Copy all files into the image
+# ✅ Copy start.sh first so it doesn’t get overwritten
+COPY start.sh /start.sh
+RUN chmod +x /start.sh
+
+# ✅ Then copy the rest of the app
 COPY . .
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Run the FastAPI server
-COPY start.sh /start.sh
-RUN chmod +x /start.sh
-
+# Start the app
 CMD ["/bin/bash", "/start.sh"]
-
-
