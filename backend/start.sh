@@ -1,10 +1,15 @@
 #!/bin/bash
 
-set -e  # stop on error
+cd /app
+
+echo "⏳ Waiting for database to be ready..."
+until pg_isready -h inventory_db -p 5432 -U postgres; do
+  sleep 1
+done
 
 echo "📦 PWD: $(pwd)"
 echo "📁 Contents:"
-ls -la
+ls -al
 
 echo "⏳ Running Alembic migrations..."
 alembic upgrade head
