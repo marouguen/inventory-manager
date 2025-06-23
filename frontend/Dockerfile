@@ -4,7 +4,10 @@ FROM node:20-alpine AS build
 WORKDIR /app
 COPY . .
 
-# ✅ Do NOT set NODE_ENV=production here — we need devDependencies for Vite build
+# ✅ Use production env for VITE_API_URL
+RUN cp .env.production .env
+
+# Install dependencies (we need devDependencies too)
 RUN npm install --include=dev
 
 # Build the frontend for production
@@ -13,27 +16,8 @@ RUN npm run build
 # Install Vite globally to preview the static build
 RUN npm install -g vite
 
-# Expose default preview port
+# Expose default Vite preview port
 EXPOSE 4173
 
-# Start Vite's preview server for testing
+# Start Vite's preview server
 CMD ["vite", "preview", "--host"]
-
-# # Stage 2: Nginx to serve frontend + reverse proxy
-# FROM nginx:stable-alpine
-
-# # ❌ Remove default Nginx config
-# RUN rm /etc/nginx/conf.d/default.conf
-
-# # ✅ Add your custom config and built frontend
-# COPY --from=build /app/dist /usr/share/nginx/html
-# COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
-
-# EXPOSE 80
-# CMD ["nginx", "-g", "daemon off;"]
-
-# ✅ Expose the Vite dev server port
-# EXPOSE 5173
-
-# ✅ Start Vite dev server (used in development, not in production builds)
-# CMD ["npm", "run", "dev"]
