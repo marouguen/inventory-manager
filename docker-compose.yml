@@ -68,17 +68,25 @@ services:
       - ./backend/.env
     command: bash /start.sh
 
-  frontend:
-    build:
-      context: ./frontend
-    container_name: inventory-frontend
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
-    ports:
-      - "5173:5173"
-    working_dir: /app
-    command: sh -c "cp .env.development .env && npm install && npm run dev"
+    #   frontend:
+    #     build:
+    #       context: ./frontend
+    #     container_name: inventory-frontend
+    #     volumes:
+    #       - ./frontend:/app
+    #       - /app/node_modules
+    #     ports:
+    #       - "5173:5173"
+    #     working_dir: /app
+    #     command: sh -c "cp .env.development .env && npm install && npm run dev"
 
-volumes:
-  pgdata:
+    # volumes:
+    #   pgdata:
+    frontend:
+      build:
+        context: ./frontend
+      container_name: inventory-frontend
+      ports:
+        - "4173:4173"
+      depends_on:
+        - backend

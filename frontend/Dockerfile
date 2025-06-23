@@ -7,7 +7,17 @@ COPY . .
 # ✅ Do NOT set NODE_ENV=production here — we need devDependencies for Vite build
 RUN npm install --include=dev
 
-# RUN npm run build
+# Build the frontend for production
+RUN npm run build
+
+# Install Vite globally to preview the static build
+RUN npm install -g vite
+
+# Expose default preview port
+EXPOSE 4173
+
+# Start Vite's preview server for testing
+CMD ["vite", "preview", "--host"]
 
 # # Stage 2: Nginx to serve frontend + reverse proxy
 # FROM nginx:stable-alpine
@@ -23,7 +33,7 @@ RUN npm install --include=dev
 # CMD ["nginx", "-g", "daemon off;"]
 
 # ✅ Expose the Vite dev server port
-EXPOSE 5173
+# EXPOSE 5173
 
 # ✅ Start Vite dev server (used in development, not in production builds)
-CMD ["npm", "run", "dev"]
+# CMD ["npm", "run", "dev"]
