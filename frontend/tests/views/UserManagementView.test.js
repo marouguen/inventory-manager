@@ -1,5 +1,5 @@
 import { mount, flushPromises } from "@vue/test-utils";
-import UserAdmin from "@/views/UserAdmin.vue";
+import userAdmin from "@/views/userAdmin.vue";
 import { vi } from "vitest";
 import api from "@/api";
 
@@ -12,7 +12,7 @@ vi.mock("@/api", () => ({
   },
 }));
 
-describe("UserAdmin.vue", () => {
+describe("userAdmin.vue", () => {
   const mockUsers = [
     { id: 1, email: "user1@example.com", role: "user", is_active: true },
     { id: 2, email: "admin@example.com", role: "admin", is_active: false },
@@ -25,7 +25,7 @@ describe("UserAdmin.vue", () => {
   });
 
   it("renders user table with fetched users", async () => {
-    const wrapper = mount(UserAdmin);
+    const wrapper = mount(userAdmin);
     await flushPromises();
 
     const rows = wrapper.findAll("tbody tr");
@@ -35,7 +35,7 @@ describe("UserAdmin.vue", () => {
   });
 
   it("changes user role and sends PATCH request", async () => {
-    const wrapper = mount(UserAdmin);
+    const wrapper = mount(userAdmin);
     await flushPromises();
 
     const roleSelects = wrapper.findAll("select");
@@ -46,7 +46,7 @@ describe("UserAdmin.vue", () => {
 
   it("deletes a user and updates table", async () => {
     global.confirm = vi.fn(() => true); // simulate confirmation
-    const wrapper = mount(UserAdmin);
+    const wrapper = mount(userAdmin);
     await flushPromises();
 
     const deleteButtons = wrapper.findAll("button.btn-danger");
