@@ -7,8 +7,8 @@ on:
 env:
   DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
   DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-  BACKEND_IMAGE: yourusername/inventory-backend
-  FRONTEND_IMAGE: yourusername/inventory-frontend
+  BACKEND_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/inventory-backend
+  FRONTEND_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/inventory-frontend
   DATABASE_URL: postgresql://postgres:admin@localhost:5432/inventory_db
 
 jobs:
@@ -44,17 +44,20 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install alembic psycopg2-binary
 
-      - name: 🕓 Wait for Postgres
+      - name: ⏳ Wait for DB & Run Alembic Migrations
+        working-directory: ./backend
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
         run: |
-          until pg_isready -h localhost -U postgres; do
-            echo "⏳ Waiting for Postgres..."
-            sleep 2
-          done
-        shell: bash
+          until pg_isready -h localhost -p 5432 -U postgres; do sleep 1; done
+          alembic upgrade head
 
       - name: ✅ Run Backend Tests (pytest)
         working-directory: ./backend
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
         run: pytest
 
       - name: 🟨 Set up Node.js
