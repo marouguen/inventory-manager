@@ -1,84 +1,69 @@
-name: CI - Test and Deploy to Docker Hub
+name: Build and Push
 
 on:
   push:
-    branches: [main]
-
-env:
-  DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-  DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-  BACKEND_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/inventory-backend
-  FRONTEND_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/inventory-frontend
-  DATABASE_URL: postgresql://postgres:admin@localhost:5432/inventory_db
+    branches:
+      - main
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: admin
-          POSTGRES_DB: inventory_db
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd="pg_isready -U postgres"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
     steps:
-      - name: 🛎️ Checkout Code
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: 🐍 Set up Python
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: "3.12"
 
-      - name: 📦 Install Backend Dependencies
-        working-directory: ./backend
+      - name: Install backend dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r backend/requirements.txt
 
-      - name: 🔄 Run Alembic Migrations
-        working-directory: ./backend
-        run: alembic upgrade head
+      - name: Wait for DB (Postgres container or service must be available here if needed)
+        run: sleep 5
 
       - name: Create test users
         run: |
           PYTHONPATH=./backend python backend/scripts/create_test_users.py
 
-      - name: ✅ Run Backend Tests (pytest)
-        working-directory: ./backend
-        run: pytest
+      - name: Run backend tests with pytest
+        run: |
+          pytest backend/tests
 
-      - name: 🟨 Set up Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "20"
 
-      - name: 📦 Install Frontend Dependencies
-        working-directory: ./frontend
-        run: npm ci
-
-      - name: ✅ Run Frontend Tests (vitest)
-        working-directory: ./frontend
-        run: npx vitest run
-
-      - name: 🔐 Log in to Docker Hub
-        run: echo "${DOCKERHUB_TOKEN}" | docker login -u "${DOCKERHUB_USERNAME}" --password-stdin
-
-      - name: 🐳 Build & Push Backend Image
+      - name: Install frontend dependencies
         run: |
-          docker build -t $BACKEND_IMAGE:latest -f backend/Dockerfile.prod ./backend
-          docker push $BACKEND_IMAGE:latest
+          cd frontend
+          npm install
 
-      - name: 🐳 Build & Push Frontend Image
+      - name: Run frontend tests
         run: |
-          docker build -t $FRONTEND_IMAGE:latest -f frontend/Dockerfile.prod ./frontend
-          docker push $FRONTEND_IMAGE:latest
+          cd frontend
+          npm run test
+
+      - name: Log in to DockerHub
+        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+      - name: Build and tag backend Docker image
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/inventory-backend:latest ./backend
+
+      - name: Build and tag frontend Docker image
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/inventory-frontend:latest ./frontend
+
+      - name: Push backend image to Docker Hub
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/inventory-backend:latest
+
+      - name: Push frontend image to Docker Hub
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/inventory-frontend:latest
