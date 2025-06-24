@@ -9,10 +9,26 @@ env:
   DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
   BACKEND_IMAGE: yourusername/inventory-backend
   FRONTEND_IMAGE: yourusername/inventory-frontend
+  DATABASE_URL: postgresql://postgres:admin@localhost:5432/inventory_db
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: admin
+          POSTGRES_DB: inventory_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
     steps:
       - name: 🛎️ Checkout Code
@@ -28,6 +44,14 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+
+      - name: 🕓 Wait for Postgres
+        run: |
+          until pg_isready -h localhost -U postgres; do
+            echo "⏳ Waiting for Postgres..."
+            sleep 2
+          done
+        shell: bash
 
       - name: ✅ Run Backend Tests (pytest)
         working-directory: ./backend
