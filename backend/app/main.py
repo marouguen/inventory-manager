@@ -1,7 +1,12 @@
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from dotenv import load_dotenv
 from app.api import auth, products,categories,suppliers,stock,dashboard,users
 
+load_dotenv()  # Load from .env file
+
+origins = os.getenv("CORS_ORIGINS", "").split(",")
 
 app = FastAPI()
 
@@ -16,7 +21,7 @@ app.include_router(users.router)
 # CORS config for frontend access
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Change in production
+    allow_origins=[origin.strip() for origin in origins if origin],  # Change in production
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

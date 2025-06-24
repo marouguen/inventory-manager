@@ -1,0 +1,19 @@
+# frontend/Dockerfile.prod
+FROM node:20-alpine AS build
+
+WORKDIR /app
+
+COPY . .
+
+# Use production env
+COPY .env.prod .env
+
+RUN npm install --include=dev
+RUN npm run build
+
+# Serve with Vite's preview server
+RUN npm install -g vite
+
+EXPOSE 4173
+
+CMD ["vite", "preview", "--host"]

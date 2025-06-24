@@ -1,1 +1,18 @@
 docker compose exec db psql -U postgres -d inventory_db
+
+docker compose down -v --remove-orphans
+docker compose build --no-cache
+docker compose up
+t_data.sqldocker exec -it inventory_db psql -U postgres -d inventory_db -f /test_data.sql
+docker cp /home/ubuntu/inventory-manager/backend/test_data.sql inventory_db:/test_data.sql
+docker exec -it inventory_db psql -U postgres -d inventory_db -f /test_data.sql
+
+ALTER TABLE products
+ADD COLUMN category_id INTEGER REFERENCES categories(id),
+ADD COLUMN supplier_id INTEGER REFERENCES suppliers(id);
+
+nslookup indusalu.pro
+dig +short indusalu.pro
+
+ping indusalu.pro
+curl -I http://indusalu.pro

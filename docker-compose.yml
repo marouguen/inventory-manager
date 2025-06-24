@@ -1,5 +1,5 @@
 services:
-  db:
+  inventory_db:
     image: postgres:15
     container_name: inventory_db
     restart: unless-stopped
@@ -22,10 +22,10 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - db
+      - inventory_db
     env_file:
       - ./backend/.env
-    # command: bash /start.sh
+    command: bash /start.sh
 
   frontend:
     build:

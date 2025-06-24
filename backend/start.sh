@@ -20,5 +20,10 @@ echo "👤 Checking for default admin user..."
 export PYTHONPATH=/app
 python ./scripts/init_admin.py
 
+# 🆕 Run dummy_inventory_data.sql
+echo "📥 Seeding dummy inventory data..."
+PGPASSWORD=admin psql -h inventory_db -U postgres -d inventory_db -f dummy_inventory_data.sql
+echo "✅ Dummy data inserted."
+
 echo "🚀 Starting FastAPI app..."
 exec uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload

@@ -3,7 +3,7 @@ import os
 from getpass import getpass
 
 # Setup Django-like path handling
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from sqlalchemy.orm import Session
 from app.db.database import SessionLocal
