@@ -30,8 +30,9 @@ jobs:
       - name: Wait for DB (Postgres container or service must be available here if needed)
         run: sleep 5
 
-      - name: Create test users
+      - name: 👤 Create test users
         run: |
+          export DATABASE_URL=sqlite:///./test.db
           PYTHONPATH=./backend python backend/scripts/create_test_users.py
 
       - name: Run backend tests with pytest
