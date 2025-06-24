@@ -51,7 +51,7 @@ jobs:
 
       - name: 👤 Initialize Default Admin User
         working-directory: ./backend
-        run: python scripts/init_admin.py
+        run: PYTHONPATH=. python scripts/init_admin.py
 
       - name: ✅ Run Backend Tests (pytest)
         working-directory: ./backend
