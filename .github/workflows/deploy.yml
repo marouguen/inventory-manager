@@ -49,9 +49,9 @@ jobs:
         working-directory: ./backend
         run: alembic upgrade head
 
-      - name: 👤 Initialize Default Admin User
-        working-directory: ./backend
-        run: PYTHONPATH=. python scripts/init_admin.py
+      - name: Create test users
+        run: |
+          PYTHONPATH=./backend python backend/scripts/create_test_users.py
 
       - name: ✅ Run Backend Tests (pytest)
         working-directory: ./backend
