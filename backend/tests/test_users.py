@@ -18,7 +18,7 @@ def test_login_user(client, db):
 
     # Test login
     response = client.post(
-        "/login",
+        "/api/login",
         data={"username": "testuser@example.com", "password": "strongpassword"},
         headers={"Content-Type": "application/x-www-form-urlencoded"}
     )
@@ -30,7 +30,7 @@ def test_update_user_role(client, admin_token, create_test_users):
     _, staff = create_test_users
 
     response = client.patch(
-        f"/users/{staff.id}",
+        f"/api/users/{staff.id}",
         json={"role": "admin"},
         headers={"Authorization": f"Bearer {admin_token}"}
     )
@@ -42,11 +42,11 @@ def test_update_user_role(client, admin_token, create_test_users):
 #✅ Test: test_get_all_users_as_admin
 def test_get_all_users_as_admin(client, admin_token):
     response = client.get(
-        "/users",
+        "/api/users",
         headers={"Authorization": f"Bearer {admin_token}"}
     )
     
-    print("GET /users response:", response.status_code, response.json())
+    print("GET /api/users response:", response.status_code, response.json())
     assert response.status_code == 200
     assert isinstance(response.json(), list)
     assert any(user["email"] == "admin@example.com" for user in response.json())
@@ -71,11 +71,11 @@ def test_delete_user_as_admin(client, admin_token, db):
 
     # Send delete request as admin
     response = client.delete(
-        f"/users/{user_id}",
+        f"/api/users/{user_id}",
         headers={"Authorization": f"Bearer {admin_token}"}
     )
 
-    print("DELETE /users/{id} response:", response.status_code, response.text)
+    print("DELETE /api/users/{id} response:", response.status_code, response.text)
 
     # ✅ Accept either 200 with message or 204 with no content
     assert response.status_code in [200, 204]
@@ -85,14 +85,14 @@ def test_delete_user_as_admin(client, admin_token, db):
         assert "detail" in json_data
         assert json_data["detail"] == "User deleted successfully"
 
-#✅ Test: Get Current User Profile (/users/me)
+#✅ Test: Get Current User Profile (/api/users/me)
 def test_get_current_user_profile(client, admin_token):
     response = client.get(
-        "/users/me",
+        "/api/users/me",
         headers={"Authorization": f"Bearer {admin_token}"}
     )
 
-    print("GET /users/me response:", response.status_code, response.json())
+    print("GET /api/users/me response:", response.status_code, response.json())
 
     assert response.status_code == 200
     data = response.json()

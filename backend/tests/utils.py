@@ -3,7 +3,7 @@ import uuid
 def create_product(client, token, category_id, supplier_id):
     unique_suffix = str(uuid.uuid4())[:8]
     response = client.post(
-        "/products/",
+        "/api/products/",
         json={
             "name": f"Product {unique_suffix}",
             "sku": f"SKU-{unique_suffix}",

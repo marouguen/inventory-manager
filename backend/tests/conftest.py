@@ -84,7 +84,7 @@ def create_test_users(db):
 @pytest.fixture
 def admin_token(client, create_test_users):
     response = client.post(
-        "/login",
+        "/api/login",
         data={"username": "admin@example.com", "password": "adminpass"},
         headers={"Content-Type": "application/x-www-form-urlencoded"}
     )

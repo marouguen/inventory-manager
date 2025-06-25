@@ -6,7 +6,7 @@ def test_create_category(client, admin_token):
     unique_name = f"Electronics-{uuid.uuid4().hex[:6]}"
 
     response = client.post(
-        "/categories/",
+        "/api/categories/",
         json={"name": unique_name},
         headers={"Authorization": f"Bearer {admin_token}"}
     )
@@ -21,7 +21,7 @@ def test_list_categories(client, admin_token):
 
     for name in names:
         response = client.post(
-            "/categories/",
+            "/api/categories/",
             json={"name": name},
             headers={"Authorization": f"Bearer {admin_token}"}
         )
@@ -33,7 +33,7 @@ def test_get_category(client, admin_token):
     unique_name = f"Electronics-{uuid.uuid4().hex[:6]}"
 
     create_response = client.post(
-        "/categories/",
+        "/api/categories/",
         json={"name": unique_name},
         headers={"Authorization": f"Bearer {admin_token}"}
     )
@@ -41,7 +41,7 @@ def test_get_category(client, admin_token):
     created_category = create_response.json()
 
     get_response = client.get(
-        f"/categories/{created_category['id']}",
+        f"/api/categories/{created_category['id']}",
         headers={"Authorization": f"Bearer {admin_token}"}
     )
     assert get_response.status_code == 200
@@ -53,7 +53,7 @@ def test_update_category(client, admin_token):
     unique_name = f"Books-{uuid.uuid4().hex[:6]}"
     
     create_response = client.post(
-        "/categories/",
+        "/api/categories/",
         json={"name": unique_name},
         headers={"Authorization": f"Bearer {admin_token}"}
     )
@@ -63,7 +63,7 @@ def test_update_category(client, admin_token):
     # Update the category
     updated_name = f"{unique_name}-Updated"
     update_response = client.put(
-        f"/categories/{created_category['id']}",
+        f"/api/categories/{created_category['id']}",
         json={"name": updated_name},
         headers={"Authorization": f"Bearer {admin_token}"}
     )
@@ -80,7 +80,7 @@ def test_delete_category(client, admin_token):
     unique_name = f"Toys-{uuid.uuid4().hex[:6]}"
     
     create_response = client.post(
-        "/categories/",
+        "/api/categories/",
         json={"name": unique_name},
         headers={"Authorization": f"Bearer {admin_token}"}
     )
@@ -89,7 +89,7 @@ def test_delete_category(client, admin_token):
 
     # Delete the category
     delete_response = client.delete(
-        f"/categories/{created_category['id']}",
+        f"/api/categories/{created_category['id']}",
         headers={"Authorization": f"Bearer {admin_token}"}
     )
     assert delete_response.status_code == 200
@@ -97,7 +97,7 @@ def test_delete_category(client, admin_token):
 
     # Verify it's gone
     get_response = client.get(
-        f"/categories/{created_category['id']}",
+        f"/api/categories/{created_category['id']}",
         headers={"Authorization": f"Bearer {admin_token}"}
     )
     assert get_response.status_code == 404

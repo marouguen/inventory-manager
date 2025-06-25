@@ -12,7 +12,7 @@ def test_register_user(client):
     db.commit()
     db.close()
 
-    response = client.post("/register", json={
+    response = client.post("/api/register", json={
         "email": "testuser@example.com",
         "password": "strongpassword"
     })
@@ -35,7 +35,7 @@ def test_login_user(client):
 
     # OAuth2PasswordRequestForm requires form-encoded data
     response = client.post(
-        "/login",
+        "/api/login",
         data={
             "username": "testuser@example.com",
             "password": "strongpassword"
@@ -51,7 +51,7 @@ def test_login_user(client):
 def test_invalid_login(client):
     # Wrong password
     response = client.post(
-        "/login",
+        "/api/login",
         data={
             "username": "testuser@example.com",
             "password": "wrongpassword"
@@ -80,7 +80,7 @@ def test_login_inactive_user(client, db):
 
     # Try to log in
     response = client.post(
-        "/login",
+        "/api/login",
         data={
             "username": inactive_email,
             "password": "inactivepass"

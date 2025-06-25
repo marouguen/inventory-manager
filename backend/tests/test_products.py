@@ -10,7 +10,7 @@ def test_create_product(client, admin_token, create_category_and_supplier):
     unique_suffix = uuid.uuid4().hex[:6]
 
     response = client.post(
-        "/products/",
+        "/api/products/",
         json={
             "name": "Test Product",
             "sku": f"SKU-{unique_suffix}",
@@ -33,7 +33,7 @@ def test_create_product(client, admin_token, create_category_and_supplier):
 # GET PRODUCTS
 # ----------------------------
 def test_get_all_products(client):
-    response = client.get("/products/")
+    response = client.get("/api/products/")
     assert response.status_code == 200
     data = response.json()
     assert isinstance(data, list)
@@ -49,7 +49,7 @@ def test_get_product_by_id(client, admin_token, create_category_and_supplier):
     unique = uuid.uuid4().hex[:6]
 
     create_response = client.post(
-        "/products/",
+        "/api/products/",
         json={
             "name": "Unique Product",
             "sku": f"SKU-{unique}",
@@ -68,7 +68,7 @@ def test_get_product_by_id(client, admin_token, create_category_and_supplier):
     product_id = create_response.json()["id"]
 
     response = client.get(
-        f"/products/{product_id}",
+        f"/api/products/{product_id}",
         headers={"Authorization": f"Bearer {admin_token}"}
     )
     assert response.status_code == 200
@@ -86,7 +86,7 @@ def test_update_product(client, admin_token, create_category_and_supplier):
     unique = uuid.uuid4().hex[:6]
 
     create_response = client.post(
-        "/products/",
+        "/api/products/",
         json={
             "name": "Old Product",
             "sku": f"SKU-{unique}",
@@ -103,7 +103,7 @@ def test_update_product(client, admin_token, create_category_and_supplier):
     product_id = create_response.json()["id"]
 
     update_response = client.put(
-        f"/products/{product_id}",
+        f"/api/products/{product_id}",
         json={
             "name": "Updated Product",
             "sku": f"SKU-{unique}-updated",
@@ -132,7 +132,7 @@ def test_delete_product(client, admin_token, create_category_and_supplier):
 
     # Create a product to delete
     create_response = client.post(
-        "/products/",
+        "/api/products/",
         json={
             "name": "Delete Product",
             "sku": f"SKU-{unique}",
@@ -150,14 +150,14 @@ def test_delete_product(client, admin_token, create_category_and_supplier):
 
     # Delete the product
     delete_response = client.delete(
-        f"/products/{product_id}",
+        f"/api/products/{product_id}",
         headers={"Authorization": f"Bearer {admin_token}"}
     )
     assert delete_response.status_code == 200
 
     # Confirm deletion
     get_response = client.get(
-        f"/products/{product_id}",
+        f"/api/products/{product_id}",
         headers={"Authorization": f"Bearer {admin_token}"}
     )
     assert get_response.status_code == 404

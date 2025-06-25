@@ -3,7 +3,7 @@ import uuid
 def test_create_supplier(client, admin_token):
     unique_name = f"Test Supplier {uuid.uuid4().hex[:6]}"
     response = client.post(
-        "/suppliers/",
+        "/api/suppliers/",
         json={
             "name": unique_name,
             "email": f"{unique_name.lower()}@example.com",
@@ -17,7 +17,7 @@ def test_create_supplier(client, admin_token):
 
 def test_get_all_suppliers(client, admin_token):
     response = client.get(
-        "/suppliers/",
+        "/api/suppliers/",
         headers={"Authorization": f"Bearer {admin_token}"}
     )
 
@@ -40,7 +40,7 @@ def test_get_supplier_by_id(client, admin_token):
 
     # Create a new supplier with a unique name
     create_response = client.post(
-        "/suppliers/",
+        "/api/suppliers/",
         json={
             "name": unique_name,
             "email": "one@supplier.com",
@@ -54,7 +54,7 @@ def test_get_supplier_by_id(client, admin_token):
 
     # Get the supplier by ID
     get_response = client.get(
-        f"/suppliers/{supplier_id}",
+        f"/api/suppliers/{supplier_id}",
         headers={"Authorization": f"Bearer {admin_token}"}
     )
     assert get_response.status_code == 200
@@ -67,7 +67,7 @@ def test_get_supplier_by_id(client, admin_token):
 def test_delete_supplier(client, admin_token):
     # Create a supplier first
     create_response = client.post(
-        "/suppliers/",
+        "/api/suppliers/",
         json={
             "name": "Delete Me Inc.",
             "email": "delete@me.com",
@@ -79,13 +79,13 @@ def test_delete_supplier(client, admin_token):
     supplier_id = create_response.json()["id"]
 
     # Delete the supplier
-    delete_response = client.delete(f"/suppliers/{supplier_id}", headers={"Authorization": f"Bearer {admin_token}"})
+    delete_response = client.delete(f"/api/suppliers/{supplier_id}", headers={"Authorization": f"Bearer {admin_token}"})
     assert delete_response.status_code == 200
     assert delete_response.json()["detail"] == "Deleted supplier Delete Me Inc."
 
 
     # Confirm it's gone
-    get_response = client.get(f"/suppliers/{supplier_id}", headers={"Authorization": f"Bearer {admin_token}"})
+    get_response = client.get(f"/api/suppliers/{supplier_id}", headers={"Authorization": f"Bearer {admin_token}"})
     assert get_response.status_code == 404
 
 ####################################################
@@ -97,7 +97,7 @@ def test_update_supplier(client, admin_token):
 
     # Step 1: Create a supplier to update
     create_response = client.post(
-        "/suppliers/",
+        "/api/suppliers/",
         json={
             "name": f"Original Supplier {unique_suffix}",
             "email": f"original{unique_suffix}@supplier.com",
@@ -116,7 +116,7 @@ def test_update_supplier(client, admin_token):
         "address": "123 Updated Street"
     }
     update_response = client.put(
-        f"/suppliers/{supplier_id}",
+        f"/api/suppliers/{supplier_id}",
         json=update_data,
         headers={"Authorization": f"Bearer {admin_token}"}
     )
