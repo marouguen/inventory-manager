@@ -1,0 +1,80 @@
+Perfect. Here's a **clean step-by-step guide** to:
+
+✅ Build the image from your current project
+✅ Push it to Docker Hub
+✅ Pull it on your EC2 server
+
+---
+
+## ✅ 1. **Build the Docker Image on Local Machine**
+
+From your project root (e.g., `inventory-manager/`), run:
+
+```bash
+docker build -t marouguen/inventory-backend:latest -f backend/Dockerfile.prod.backend .
+```
+
+For the frontend:
+
+```bash
+docker build -t marouguen/inventory-frontend:latest -f frontend/Dockerfile.prod.frontend .
+```
+
+> Replace paths if your Dockerfiles are elsewhere.
+
+---
+
+## ✅ 2. **Login to Docker Hub (Local Machine)**
+
+```bash
+docker login -u marouguen
+```
+
+---
+
+## ✅ 3. **Push to Docker Hub**
+
+```bash
+docker push marouguen/inventory-backend:latest
+docker push marouguen/inventory-frontend:latest
+```
+
+---
+
+## ✅ 4. **Pull Images from EC2 Server**
+
+SSH into your EC2 instance:
+
+```bash
+ssh -i apps.pem ubuntu@<YOUR_EC2_PUBLIC_IP>
+```
+
+Then pull:
+
+```bash
+docker pull marouguen/inventory-backend:latest
+docker pull marouguen/inventory-frontend:latest
+```
+
+If you get a permission error:
+
+```bash
+sudo usermod -aG docker $USER
+newgrp docker
+```
+
+---
+
+## ✅ 5. **Run via Docker Compose**
+
+Make sure your `docker-compose.prod.yml` file is in place and environment files are ready (`.env.prod.backend`, `.env.prod.frontend`).
+
+Then:
+
+```bash
+docker compose -f docker-compose.prod.yml up -d
+```
+
+---
+
+Would you like me to **check or generate your Dockerfiles or `.env` files** before proceeding?

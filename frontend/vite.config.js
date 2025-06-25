@@ -21,6 +21,6 @@ export default defineConfig({
   preview: {
     host: true,
     port: 4173,
-    allowedHosts: ["indusalu.pro"], // ✅ Add your domain here
+    allowedHosts: ["all"], // ✅ Add your domain here
   },
 });

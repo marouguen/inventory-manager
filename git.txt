@@ -1,0 +1,63 @@
+Perfect. Here's the clean and safe way to do what you want:
+
+---
+
+## ✅ GOAL
+
+You want to:
+
+1. Keep your **later commits** (after `38f6661`) in a **separate branch**.
+2. Restore the **main branch** to the state of commit `38f6661` so you can work freely from there.
+
+---
+
+## ✅ STEP-BY-STEP
+
+### 1️⃣ Create a backup branch to preserve all current work:
+
+```bash
+git checkout -b temp-backup-branch
+```
+
+This moves you to a new branch with all your current work (latest commits included).
+
+---
+
+### 2️⃣ Switch back to `main` branch:
+
+```bash
+git checkout main
+```
+
+---
+
+### 3️⃣ Reset `main` to the desired older commit (safe now because your work is backed up):
+
+```bash
+git reset --hard 38f6661
+```
+
+Now, your `main` branch is clean and exactly as it was in commit `38f6661`.
+
+---
+
+### ✅ RESULT
+
+| Branch               | State                                     |
+| -------------------- | ----------------------------------------- |
+| `main`               | At commit `38f6661`, ready for fresh work |
+| `temp-backup-branch` | All commits after `38f6661`, nothing lost |
+
+---
+
+## 🧠 Optional: Rename `temp-backup-branch` if needed
+
+If you plan to keep working on those later commits:
+
+```bash
+git branch -m feature-later-commits
+```
+
+---
+
+Let me know if you want to merge them later or cherry-pick specific features from that branch.

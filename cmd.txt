@@ -6,6 +6,8 @@ docker compose up
 t_data.sqldocker exec -it inventory_db psql -U postgres -d inventory_db -f /test_data.sql
 docker cp /home/ubuntu/inventory-manager/backend/test_data.sql inventory_db:/test_data.sql
 docker exec -it inventory_db psql -U postgres -d inventory_db -f /test_data.sql
+docker pull marouguen/inventory-backend:latest
+docker pull marouguen/inventory-frontend:latest
 
 ALTER TABLE products
 ADD COLUMN category_id INTEGER REFERENCES categories(id),
@@ -16,3 +18,39 @@ dig +short indusalu.pro
 
 ping indusalu.pro
 curl -I http://indusalu.pro
+
+chmod 400 apps.pem
+scp -i maintenance-app-key.pem docker-compose.prod.yml ubuntu@13.60.196.214:~/inventory-manager/
+scp -i maintenance-app-key.pem backend/.env.prod.backend ubuntu@13.60.196.214:~/inventory-manager/
+scp -i maintenance-app-key.pem frontend/.env.prod.frontend ubuntu@13.60.196.214:~/inventory-manager/
+
+docker exec -it inventory-manager-inventory-frontend-1 sh
+docker exec -it inventory-manager-inventory-backend-1 sh
+env | grep VITE_API_URL
+env | grep CORS_ORIGINS
+env | grep VITE
+
+curl -X POST http://localhost:8000/login \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "username=m.a.marouguen@gmail.com&password=admin123"
+{"access_token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzUwODUxNTY2fQ.9NqXexd_T7TdLsdE8nEHc-L9DRX-ewgXppvWxCmcLmA","token_type":"bearer"}ubuntu@ip-172-31-41-190:~/inventory-manager$ 
+
+curl -X POST http://localhost:8000/api/login \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "username=m.a.marouguen@gmail.com&password=admin123"
+
+docker exec -it <frontend-container> sh
+echo $VITE_API_URL
+
+sudo lsof -i -P -n
+
+
+curl http://13.60.196.214:8000/api/login
+docker logs -f inventory-manager-inventory-backend-1
+
+mkdir -p ~/inventory-manager
+
+mkdir -p ~/inventory-manager/frontend
+echo "VITE_API_URL=http://13.60.246.29:8000/api" > ~/inventory-manager/frontend/.env.prod.frontend
+
+docker compose -f docker-compose.prod.yml down -v --remove-orphans
