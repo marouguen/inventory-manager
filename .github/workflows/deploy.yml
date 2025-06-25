@@ -78,9 +78,9 @@ jobs:
           key: ${{ secrets.EC2_KEY }}
           source: |
             docker-compose.prod.yml
-            .env.prod.backend
-            .env.prod.frontend
-          target: ~/app
+            backend/.env.prod.backend
+            frontend/.env.prod.frontend
+          target: ~/inventory-manager
 
       - name: 🚀 Deploy via SSH
         uses: appleboy/ssh-action@v1.0.0
