@@ -12,6 +12,7 @@ env:
   FRONTEND_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/inventory-frontend
   DATABASE_URL: sqlite:///./test_stock_isolated.db
   PYTHONPATH: ./backend
+  DEPLOY_DIR: ~/inventory-manager
 
 jobs:
   test-and-build:
@@ -80,7 +81,7 @@ jobs:
             docker-compose.prod.yml
             backend/.env.prod.backend
             frontend/.env.prod.frontend
-          target: ~/inventory-manager
+          target: ${{ env.DEPLOY_DIR }}
 
       - name: 🚀 Deploy via SSH
         uses: appleboy/ssh-action@v1.0.0
@@ -89,7 +90,7 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_KEY }}
           script: |
-            cd ~/app
+            cd ${{ env.DEPLOY_DIR }}
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/inventory-backend:latest
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/inventory-frontend:latest
             docker compose -f docker-compose.prod.yml --env-file .env.prod.backend --env-file .env.prod.frontend up -d --force-recreate
