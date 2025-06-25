@@ -66,30 +66,12 @@ jobs:
         run: |
           docker build -t $FRONTEND_IMAGE:latest -f frontend/Dockerfile.prod.frontend ./frontend
           docker push $FRONTEND_IMAGE:latest
+
   deploy-to-ec2:
     needs: test-and-build
     runs-on: ubuntu-latest
 
     steps:
-      - name: 🔍 Checkout Code
-        uses: actions/checkout@v4
-
-      - name: 📁 Stage Deployment Files
-        run: |
-          mkdir deploy
-          cp docker-compose.prod.yml deploy/
-          cp backend/.env.prod.backend deploy/
-          cp frontend/.env.prod.frontend deploy/
-
-      - name: 📂 Copy to EC2
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_KEY }}
-          source: deploy/*
-          target: ${{ env.DEPLOY_DIR }}
-
       - name: 🚀 SSH Deploy
         uses: appleboy/ssh-action@v1.0.0
         with:
