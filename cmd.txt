@@ -16,3 +16,8 @@ dig +short indusalu.pro
 
 ping indusalu.pro
 curl -I http://indusalu.pro
+
+
+scp -i maintenance-app-key.pem docker-compose.prod.yml ubuntu@13.60.196.214:~/inventory-manager/
+scp -i maintenance-app-key.pem backend/.env.prod.backend ubuntu@13.60.196.214:~/inventory-manager/
+scp -i maintenance-app-key.pem frontend/.env.prod.frontend ubuntu@13.60.196.214:~/inventory-manager/

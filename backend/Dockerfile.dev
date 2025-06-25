@@ -17,7 +17,7 @@ COPY . .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Load production environment variables
-COPY .env.prod .env
+COPY .env.dev .env
 
 # Expose production port
 EXPOSE 8000
