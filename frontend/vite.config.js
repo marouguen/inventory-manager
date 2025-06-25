@@ -2,11 +2,10 @@ import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import { fileURLToPath, URL } from "node:url";
 
-// https://vite.dev/config/
 export default defineConfig({
   resolve: {
     alias: {
-      "@": fileURLToPath(new URL("./src", import.meta.url)), // ✅ Ensures @ = src/
+      "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
   plugins: [vue()],
@@ -21,6 +20,6 @@ export default defineConfig({
   preview: {
     host: true,
     port: 4173,
-    allowedHosts: ["indusalu.pro"], // ✅ Add your domain here
+    allowedHosts: "all", // ✅ allows access via IP or any domain
   },
 });
