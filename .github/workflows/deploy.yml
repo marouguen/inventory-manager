@@ -58,12 +58,12 @@ jobs:
 
       - name: 🐳 Build & Push Backend Docker Image
         run: |
-          docker build -t $BACKEND_IMAGE:latest -f backend/Dockerfile.prod ./backend
+          docker build -t $BACKEND_IMAGE:latest -f backend/Dockerfile.prod.backend ./backend
           docker push $BACKEND_IMAGE:latest
 
       - name: 🐳 Build & Push Frontend Docker Image
         run: |
-          docker build -t $FRONTEND_IMAGE:latest -f frontend/Dockerfile.prod ./frontend
+          docker build -t $FRONTEND_IMAGE:latest -f frontend/Dockerfile.prod.frontend ./frontend
           docker push $FRONTEND_IMAGE:latest
   deploy-to-ec2:
     needs: test-and-build
