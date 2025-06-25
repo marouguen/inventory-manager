@@ -1,6 +1,6 @@
 services:
   inventory-backend:
-    image: your-dockerhub-username/inventory-backend:latest
+    image: marouguen/inventory-backend:latest
     ports:
       - "8000:8000"
     env_file:
@@ -9,7 +9,7 @@ services:
       - inventory_db
 
   inventory-frontend:
-    image: your-dockerhub-username/inventory-frontend:latest
+    image: marouguen/inventory-frontend:latest
     ports:
       - "4173:4173"
     env_file:

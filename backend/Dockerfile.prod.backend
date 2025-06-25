@@ -1,18 +1,27 @@
-# backend/Dockerfile.prod
 FROM python:3.12-slim
 
+# Install system dependencies
+RUN apt-get update && apt-get install -y gcc libpq-dev postgresql-client && apt-get clean
+
+# Set working directory
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y gcc libpq-dev
+# Copy and set executable permissions on the startup script
+COPY start.sh /start.sh
+RUN chmod +x /start.sh
 
+# Copy requirements and install Python dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Copy the entire application code
 COPY . .
 
-# Copy the production env file into the container
+# Load production environment variables
 COPY .env.prod.backend .env
 
+# Expose backend port
 EXPOSE 8000
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Run the startup script
+CMD ["/bin/bash", "/start.sh"]
