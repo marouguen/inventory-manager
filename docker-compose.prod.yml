@@ -3,22 +3,22 @@ services:
   inventory-backend:
     build:
       context: ./backend
-      dockerfile: Dockerfile.prod
+      dockerfile: Dockerfile.prod.backend
     ports:
       - "8000:8000"
     env_file:
-      - ./backend/.env.prod
+      - ./backend/.env.prod.backend
     depends_on:
       - inventory_db
 
   inventory-frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile.prod
+      dockerfile: Dockerfile.prod.frontend
     ports:
       - "4173:4173"
     env_file:
-      - ./frontend/.env.prod
+      - ./frontend/.env.prod.frontend
     depends_on:
       - inventory-backend
 

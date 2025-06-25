@@ -65,3 +65,31 @@ jobs:
         run: |
           docker build -t $FRONTEND_IMAGE:latest -f frontend/Dockerfile.prod ./frontend
           docker push $FRONTEND_IMAGE:latest
+  deploy-to-ec2:
+    needs: test-and-build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📂 Copy Deployment Files to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_KEY }}
+          source: |
+            docker-compose.prod.yml
+            .env.prod.backend
+            .env.prod.frontend
+          target: ~/app
+
+      - name: 🚀 Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_KEY }}
+          script: |
+            cd ~/app
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/inventory-backend:latest
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/inventory-frontend:latest
+            docker compose -f docker-compose.prod.yml --env-file .env.prod.backend --env-file .env.prod.frontend up -d --force-recreate

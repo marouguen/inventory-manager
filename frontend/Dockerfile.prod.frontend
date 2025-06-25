@@ -6,7 +6,7 @@ WORKDIR /app
 COPY . .
 
 # Use production env
-COPY .env.prod .env
+COPY .env.prod.frontend .env
 
 RUN npm install --include=dev
 RUN npm run build

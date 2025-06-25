@@ -11,7 +11,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Copy the production env file into the container
-COPY .env.prod .env
+COPY .env.prod.backend .env
 
 EXPOSE 8000
 
