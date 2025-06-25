@@ -1,5 +1,8 @@
 services:
   inventory-backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod.backend
     image: marouguen/inventory-backend:latest
     ports:
       - "8000:8000"
@@ -9,6 +12,9 @@ services:
       - inventory_db
 
   inventory-frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod.frontend
     image: marouguen/inventory-frontend:latest
     ports:
       - "4173:4173"
