@@ -83,6 +83,6 @@ jobs:
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/inventory-backend:latest
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/inventory-frontend:latest
             docker compose -f docker-compose.prod.yml \
-              --env-file backend/.env.prod.backend \
-              --env-file frontend/.env.prod.frontend \
-              up -d --force-recreate
+              # --env-file backend/.env.prod.backend \
+              # --env-file frontend/.env.prod.frontend \
+              # up -d --force-recreate
