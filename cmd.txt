@@ -21,3 +21,20 @@ curl -I http://indusalu.pro
 scp -i maintenance-app-key.pem docker-compose.prod.yml ubuntu@13.60.196.214:~/inventory-manager/
 scp -i maintenance-app-key.pem backend/.env.prod.backend ubuntu@13.60.196.214:~/inventory-manager/
 scp -i maintenance-app-key.pem frontend/.env.prod.frontend ubuntu@13.60.196.214:~/inventory-manager/
+
+docker exec -it inventory-manager-frontend-1 sh
+docker exec -it inventory-manager-inventory-frontend-1 bash
+env | grep VITE_API_URL
+env | grep CORS_ORIGINS
+
+ubuntu@ip-172-31-41-190:~/inventory-manager$ curl -X POST http://localhost:8000/api/login \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "username=m.a.marouguen@gmail.com&password=admin123"
+{"access_token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzUwODUxNTY2fQ.9NqXexd_T7TdLsdE8nEHc-L9DRX-ewgXppvWxCmcLmA","token_type":"bearer"}ubuntu@ip-172-31-41-190:~/inventory-manager$ 
+
+curl -X POST http://localhost:8000/api/login \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "username=m.a.marouguen@gmail.com&password=admin123"
+
+docker exec -it <frontend-container> sh
+echo $VITE_API_URL

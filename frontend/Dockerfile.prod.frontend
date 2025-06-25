@@ -16,4 +16,4 @@ RUN npm install -g vite
 
 EXPOSE 4173
 
-CMD ["vite", "preview", "--host"]
+CMD ["vite", "preview", "--host", "0.0.0.0"]
