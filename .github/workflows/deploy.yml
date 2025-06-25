@@ -82,6 +82,7 @@ jobs:
             backend/.env.prod.backend
             frontend/.env.prod.frontend
           target: ${{ env.DEPLOY_DIR }}
+          strip_components: 0
 
       - name: 🚀 Deploy via SSH
         uses: appleboy/ssh-action@v1.0.0
